@@ -1,19 +1,25 @@
 package com.neumiiller.databindingexamplewithbraintree;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.ConfigurationListener;
+import com.braintreepayments.api.models.Configuration;
 import com.neumiiller.databindingexamplewithbraintree.databinding.ActivityMainBinding;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ConfigurationListener {
+
+    private BraintreeFragment mFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        Log.d("Braintree", "Creating BraintreeFragment");
+        try {
+            mFragment = BraintreeFragment.newInstance(this, "sandbox_tmxhyf7d_dcpspy2brwdjr3qn");
+            Log.d("Braintree", "BraintreeFragment authorization correct");
+        } catch (InvalidArgumentException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -55,5 +68,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationFetched(Configuration configuration) {
+        Log.d("Braintree", "Braintree configured");
     }
 }
